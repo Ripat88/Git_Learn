@@ -1,0 +1,115 @@
+Обычные коммиты 1.0.0
+Краткие сведения
+Спецификация обычных коммитов представляет собой упрощенное соглашение поверх сообщений о фиксации. Она предоставляет простой набор правил для создания явной истории коммитов; что упрощает написание автоматических инструментов поверх. Это соглашение согласуется с SemVer, описывая функции, исправления и критические изменения, внесенные в сообщения о фиксации.
+
+Сообщение о фиксации должно быть структурировано следующим образом:
+
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+Коммит содержит следующие структурные элементы для информирования о намерениях потребителей вашей библиотеки:
+
+исправление: коммит типа fix исправляет ошибку в вашей кодовой базе (это соотносится с PATCH семантическим управлением версиями).
+подвиг: коммит типа feat вводит новую функцию в кодовую базу (это соотносится с MINOR семантическим управлением версиями).
+КРИТИЧЕСКОЕ ИЗМЕНЕНИЕ: коммит, который имеет нижний колонтитул BREAKING CHANGE: или добавляет ! после типа / области видимости, вносит критическое изменение API (соответствующее MAJOR семантическому управлению версиями). КРИТИЧЕСКОЕ ИЗМЕНЕНИЕ может быть частью коммитов любого типа.
+допускаются типы, отличные от fix: и feat:, например @commitlint/config-обычные (основанные на соглашении Angular) рекомендуют build:, chore:, ci: docs:, style: refactor: perf:, test:,,,,,,,,,,,,,,,,,,,,,,,,,,,,, и другие.
+Могут предоставляться нижние колонтитулы, отличные от BREAKING CHANGE: <description>, в соответствии с соглашением, аналогичным формату трейлера git.
+Дополнительные типы не предусмотрены спецификацией обычных коммитов и не оказывают неявного влияния на семантическое управление версиями (если только они не включают КРИТИЧЕСКОЕ ИЗМЕНЕНИЕ). Для типа фиксации может быть предоставлена область видимости для предоставления дополнительной контекстуальной информации, которая содержится в круглых скобках, например, feat(parser): add ability to parse arrays.
+
+Examples
+Commit message with description and breaking change footer
+feat: allow provided config object to extend other configs
+
+BREAKING CHANGE: `extends` key in config file is now used for extending other config files
+Commit message with ! to draw attention to breaking change
+feat!: send an email to the customer when a product is shipped
+Commit message with scope and ! to draw attention to breaking change
+feat(api)!: send an email to the customer when a product is shipped
+Commit message with both ! and BREAKING CHANGE footer
+chore!: drop support for Node 6
+
+BREAKING CHANGE: use JavaScript features not available in Node 6.
+Commit message with no body
+docs: correct spelling of CHANGELOG
+Commit message with scope
+feat(lang): add Polish language
+Commit message with multi-paragraph body and multiple footers
+fix: prevent racing of requests
+
+Introduce a request id and a reference to latest request. Dismiss
+incoming responses other than from latest request.
+
+Remove timeouts which were used to mitigate the racing issue but are
+obsolete now.
+
+Reviewed-by: Z
+Refs: #123
+Specification
+The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in RFC 2119.
+
+Commits MUST be prefixed with a type, which consists of a noun, feat, fix, etc., followed by the OPTIONAL scope, OPTIONAL !, and REQUIRED terminal colon and space.
+The type feat MUST be used when a commit adds a new feature to your application or library.
+The type fix MUST be used when a commit represents a bug fix for your application.
+A scope MAY be provided after a type. A scope MUST consist of a noun describing a section of the codebase surrounded by parenthesis, e.g., fix(parser):
+A description MUST immediately follow the colon and space after the type/scope prefix. The description is a short summary of the code changes, e.g., fix: array parsing issue when multiple spaces were contained in string.
+A longer commit body MAY be provided after the short description, providing additional contextual information about the code changes. The body MUST begin one blank line after the description.
+A commit body is free-form and MAY consist of any number of newline separated paragraphs.
+One or more footers MAY be provided one blank line after the body. Each footer MUST consist of a word token, followed by either a :<space> or <space># separator, followed by a string value (this is inspired by the git trailer convention).
+A footer’s token MUST use - in place of whitespace characters, e.g., Acked-by (this helps differentiate the footer section from a multi-paragraph body). An exception is made for BREAKING CHANGE, which MAY also be used as a token.
+A footer’s value MAY contain spaces and newlines, and parsing MUST terminate when the next valid footer token/separator pair is observed.
+Breaking changes MUST be indicated in the type/scope prefix of a commit, or as an entry in the footer.
+If included as a footer, a breaking change MUST consist of the uppercase text BREAKING CHANGE, followed by a colon, space, and description, e.g., BREAKING CHANGE: environment variables now take precedence over config files.
+If included in the type/scope prefix, breaking changes MUST be indicated by a ! immediately before the :. If ! is used, BREAKING CHANGE: MAY be omitted from the footer section, and the commit description SHALL be used to describe the breaking change.
+Types other than feat and fix MAY be used in your commit messages, e.g., docs: update ref docs.
+The units of information that make up Conventional Commits MUST NOT be treated as case sensitive by implementors, with the exception of BREAKING CHANGE which MUST be uppercase.
+BREAKING-CHANGE MUST be synonymous with BREAKING CHANGE, when used as a token in a footer.
+Why Use Conventional Commits
+Automatically generating CHANGELOGs.
+Automatically determining a semantic version bump (based on the types of commits landed).
+Communicating the nature of changes to teammates, the public, and other stakeholders.
+Запуск процессов сборки и публикации.
+Облегчая людям участие в ваших проектах, позволяя им изучать более структурированную историю коммитов.
+Вопросы и ответы
+Как мне следует обращаться с сообщениями о фиксации на начальном этапе разработки?
+Мы рекомендуем вам действовать так, как будто вы уже выпустили продукт. Обычно кто-то, даже если это ваши коллеги-разработчики программного обеспечения, использует ваше программное обеспечение. Они захотят знать, что исправлено, что ломается и т.д.
+
+Являются ли типы в заголовке коммита прописными или строчными?
+Можно использовать любую оболочку, но лучше всего быть последовательным.
+
+Что мне делать, если коммит соответствует более чем одному из типов коммитов?
+Возвращайтесь и делайте несколько коммитов, когда это возможно. Одним из преимуществ обычных коммитов является их способность побуждать нас делать более организованные коммиты и PR.
+
+Не препятствует ли это быстрой разработке и повторению?
+Это препятствует быстрому неорганизованному движению. Это помогает вам быстро продвигаться в долгосрочной перспективе по нескольким проектам с разными участниками.
+
+Могут ли обычные коммиты привести разработчиков к ограничению типа совершаемых ими коммитов, потому что они будут думать о предоставляемых типах?
+Обычные коммиты побуждают нас делать больше определенных типов коммитов, таких как исправления. В остальном гибкость обычных коммитов позволяет вашей команде придумывать свои собственные типы и изменять их с течением времени.
+
+Как это связано с SemVer?
+fix коммиты типа должны быть переведены в PATCH релизы. feat коммиты типа должны быть переведены в MINOR релизы. Коммиты с BREAKING CHANGE в коммитах, независимо от типа, должны быть переведены в MAJOR релизы.
+
+Как мне привести мои расширения в соответствие со спецификацией обычных коммитов, например @jameswomack/conventional-commit-spec?
+Мы рекомендуем использовать SemVer для выпуска ваших собственных расширений к этой спецификации (и рекомендуем вам создавать эти расширения!)
+
+Что мне делать, если я случайно использую неправильный тип коммита?
+Когда вы использовали тип, соответствующий спецификации, но неправильный тип, например, fix вместо feat
+Перед объединением или устранением ошибки мы рекомендуем использовать git rebase -i для редактирования истории фиксаций. После освобождения очистка будет отличаться в зависимости от того, какие инструменты и процессы вы используете.
+
+Когда вы использовали тип, не соответствующий спецификации, например, feet вместо feat
+В худшем случае, это не конец света, если произойдет коммит, который не соответствует спецификации обычных коммитов. Это просто означает, что коммит будет пропущен инструментами, основанными на спецификации.
+
+Должны ли все мои участники использовать спецификацию обычных коммитов?
+Нет! Если вы используете рабочий процесс на основе squash в Git, ведущие сопровождающие могут очищать сообщения о фиксации по мере их объединения, не добавляя нагрузки случайным коммиттерам. Обычный рабочий процесс для этого заключается в том, чтобы ваша система git автоматически удаляла коммиты из запроса на извлечение и предоставляла ведущему сопровождающему форму для ввода соответствующего сообщения git commit для слияния.
+
+Как обычные коммиты обрабатывают возвраты коммитов?
+Возврат кода может быть сложным: вы возвращаете несколько коммитов? если вы возвращаете функцию, должен ли следующий выпуск вместо этого быть исправлением?
+
+Обычные фиксации не предпринимают явных усилий для определения поведения возврата. Вместо этого мы оставляем авторам инструментов использовать гибкость типов и нижних колонтитулов для разработки своей логики обработки возвратов.
+
+Одна из рекомендаций заключается в использовании revert типа и нижнего колонтитула, который ссылается на SHA фиксации, которые отменяются:
+
+revert: let us never again speak of the noodle incident
+
+Refs: 676104e, a215868
